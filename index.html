@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grapi Host BD - Minecraft Server Hosting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4CAF50; /* Minecraft Green */
+            --secondary-color: #333; /* Dark Grey */
+            --accent-color: #FFC107; /* Amber/Gold */
+            --text-color: #eee; /* Light Grey */
+            --bg-color: #222; /* Darker Grey for background */
+            --card-bg: #444; /* Medium Grey for cards */
+            --border-radius: 8px;
+            --font-family-primary: 'Montserrat', sans-serif;
+            --font-family-secondary: 'Press Start 2P', cursive;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* --- Header --- */
+        header {
+            background-color: var(--secondary-color);
+            padding: 15px 0;
+            border-bottom: 3px solid var(--primary-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            position: relative; /* For dropdown menu positioning */
+        }
+
+        .logo {
+            font-family: var(--font-family-secondary);
+            font-size: 20px; /* Reduced */
+            color: var(--primary-color);
+            text-decoration: none;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            white-space: nowrap; /* Prevents logo from wrapping */
+        }
+
+        /* --- Updated Menu Icon & Dropdown --- */
+        .menu-icon {
+            font-size: 28px; /* Reduced */
+            cursor: pointer;
+            color: var(--text-color);
+            display: block; /* Always show for simplicity, can be hidden on desktop with media queries */
+        }
+
+        .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: none; /* Hidden by default, toggled by JS */
+            position: absolute;
+            top: 100%; /* Position below header */
+            right: 0;
+            background-color: var(--secondary-color);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.5);
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            min-width: 180px; /* Adjust as needed */
+            z-index: 999;
+            flex-direction: column; /* Stack links vertically */
+            animation: slideDown 0.3s ease-out forwards;
+        }
+
+        .nav-links.active {
+            display: flex; /* Show when active */
+        }
+
+        .nav-links li {
+            margin: 0; /* Remove default margin */
+            padding: 12px 18px; /* Reduced padding */
+            border-bottom: 1px solid #555; /* Separator */
+        }
+
+        .nav-links li:last-child {
+            border-bottom: none;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 15px; /* Reduced */
+            transition: color 0.3s ease;
+            display: block; /* Make the whole area clickable */
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Adjust desktop view if needed */
+        @media (min-width: 769px) {
+            .nav-links {
+                position: static; /* Reset position for desktop */
+                display: flex !important; /* Always show on desktop */
+                flex-direction: row; /* Horizontal on desktop */
+                background-color: transparent;
+                box-shadow: none;
+                border-radius: 0;
+                min-width: unset;
+                animation: none; /* No animation on desktop */
+            }
+
+            .nav-links li {
+                margin-left: 25px; /* Reduced */
+                padding: 0;
+                border-bottom: none;
+            }
+        }
+
+        /* --- Page Sections --- */
+        .page-section {
+            display: none; /* Hidden by default */
+            padding: 30px 0; /* Reduced */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* --- Home Section --- */
+        #home {
+            text-align: center;
+            padding-top: 50px; /* Reduced */
+        }
+
+        #home h1 {
+            font-family: var(--font-family-secondary);
+            font-size: 38px; /* Reduced */
+            color: var(--primary-color);
+            margin-bottom: 30px; /* Reduced */
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.7);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted min-width */
+            gap: 25px; /* Reduced */
+            margin-top: 40px; /* Reduced */
+        }
+
+        .price-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 25px; /* Reduced */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            text-align: left;
+            border: 2px solid var(--secondary-color);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .price-card:hover {
+            transform: translateY(-8px); /* Reduced */
+            border-color: var(--primary-color);
+        }
+
+        .price-card h2 {
+            font-size: 28px; /* Reduced */
+            color: var(--accent-color);
+            margin-bottom: 8px; /* Reduced */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+
+        .price-card .price {
+            font-size: 42px; /* Reduced */
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 12px; /* Reduced */
+        }
+
+        .price-card .price small {
+            font-size: 16px; /* Reduced */
+            color: var(--text-color);
+        }
+
+        .price-card ul {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 20px; /* Reduced */
+        }
+
+        .price-card ul li {
+            margin-bottom: 8px; /* Reduced */
+            font-size: 16px; /* Reduced */
+            color: var(--text-color);
+        }
+
+        .price-card ul li::before {
+            content: '⛏️ '; /* Minecraft Pickaxe emoji */
+            color: var(--primary-color);
+            margin-right: 6px; /* Reduced */
+        }
+
+        .order-button {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 25px; /* Reduced */
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px; /* Reduced */
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .order-button:hover {
+            background-color: #5cb85c;
+            transform: translateY(-2px);
+        }
+
+        /* --- Login/Register Section --- */
+        #auth, #profile {
+            text-align: center;
+            padding-top: 60px; /* Reduced */
+        }
+
+        #auth h2, #profile h2 {
+            font-size: 30px; /* Reduced */
+            color: var(--accent-color);
+            margin-bottom: 25px; /* Reduced */
+        }
+
+        .auth-form-container {
+            background-color: var(--card-bg);
+            padding: 30px; /* Reduced */
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            max-width: 450px; /* Reduced */
+            margin: 0 auto;
+        }
+
+        .auth-form-container input[type="text"],
+        .auth-form-container input[type="email"],
+        .auth-form-container input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px; /* Reduced */
+            margin-bottom: 15px; /* Reduced */
+            border: 1px solid #666;
+            border-radius: 5px;
+            background-color: #333;
+            color: var(--text-color);
+            font-size: 15px; /* Reduced */
+        }
+
+        .auth-form-container button {
+            width: 100%;
+            padding: 12px; /* Reduced */
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px; /* Reduced */
+            font-weight: 700;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .auth-form-container button:hover {
+            background-color: #5cb85c;
+        }
+
+        .toggle-auth-mode {
+            margin-top: 15px; /* Reduced */
+            color: var(--text-color);
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+            font-size: 14px; /* Reduced */
+        }
+
+        .toggle-auth-mode:hover {
+            color: var(--primary-color);
+        }
+
+        /* --- Profile Section --- */
+        #profile-info p {
+            font-size: 18px; /* Reduced */
+            margin-bottom: 12px; /* Reduced */
+            color: var(--text-color);
+        }
+
+        #profile-info span {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        #profile-logout {
+            margin-top: 25px; /* Reduced */
+            background-color: #d9534f; /* Red for logout */
+        }
+
+        #profile-logout:hover {
+            background-color: #c9302c;
+        }
+
+        /* --- Order Information Section --- */
+        #order-info {
+            text-align: center;
+            padding-top: 60px; /* Reduced */
+        }
+
+        #order-info h2 {
+            font-size: 30px; /* Reduced */
+            color: var(--accent-color);
+            margin-bottom: 25px; /* Reduced */
+        }
+
+        #order-details {
+            background-color: var(--card-bg);
+            padding: 25px; /* Reduced */
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            max-width: 550px; /* Reduced */
+            margin: 0 auto 25px auto; /* Reduced */
+            text-align: left;
+        }
+
+        #order-details p {
+            font-size: 20px; /* Reduced */
+            margin-bottom: 12px; /* Reduced */
+            color: var(--text-color);
+        }
+
+        #order-details span {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .confirm-order-btn {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 30px; /* Reduced */
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 18px; /* Reduced */
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.3s ease;
+        }
+
+        .confirm-order-btn:hover {
+            background-color: #5cb85c;
+        }
+
+        /* --- Chat Section --- */
+        #chat {
+            padding-top: 60px; /* Reduced */
+        }
+
+        #chat h2 {
+            font-size: 30px; /* Reduced */
+            color: var(--accent-color);
+            margin-bottom: 25px; /* Reduced */
+            text-align: center;
+        }
+
+        .chat-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            max-width: 650px; /* Reduced */
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            height: 500px; /* Reduced */
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background-color: var(--secondary-color);
+            padding: 12px 18px; /* Reduced */
+            color: white;
+            font-weight: 700;
+            font-size: 18px; /* Reduced */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+        }
+
+        .close-chat-btn {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+            padding: 7px 12px; /* Reduced */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px; /* Reduced */
+            transition: background-color 0.3s ease;
+        }
+
+        .close-chat-btn:hover {
+            background-color: #c9302c;
+        }
+
+        .chat-messages {
+            flex-grow: 1;
+            padding: 15px; /* Reduced */
+            overflow-y: auto;
+            background-color: #333;
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+            font-size: 15px; /* Reduced */
+        }
+
+        /* Chat Message Bubbles */
+        .chat-message {
+            display: flex;
+            margin-bottom: 8px; /* Reduced */
+        }
+
+        .chat-message.user {
+            justify-content: flex-end; /* User messages to the right */
+        }
+
+        .chat-message.admin {
+            justify-content: flex-start; /* Admin messages to the left */
+        }
+
+        .message-bubble {
+            padding: 10px 15px; /* Reduced */
+            border-radius: 18px; /* Reduced */
+            max-width: 75%;
+            word-wrap: break-word;
+            font-size: 15px; /* Reduced */
+        }
+
+        .chat-message.user .message-bubble {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .chat-message.admin .message-bubble {
+            background-color: #555; /* Slightly lighter grey for admin */
+            color: white;
+        }
+
+        .chat-input-container {
+            padding: 12px; /* Reduced */
+            background-color: var(--secondary-color);
+            display: flex;
+            border-bottom-left-radius: var(--border-radius);
+            border-bottom-right-radius: var(--border-radius);
+        }
+
+        .chat-input-container input {
+            flex-grow: 1;
+            padding: 10px; /* Reduced */
+            border: none;
+            border-radius: 20px; /* Reduced */
+            margin-right: 8px; /* Reduced */
+            background-color: #555;
+            color: white;
+            font-size: 15px; /* Reduced */
+        }
+
+        .chat-input-container button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 20px; /* Reduced */
+            padding: 10px 18px; /* Reduced */
+            cursor: pointer;
+            font-size: 15px; /* Reduced */
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-input-container button:hover {
+            background-color: #5cb85c;
+        }
+
+        /* --- Admin Section --- */
+        #admin {
+            padding-top: 60px; /* Reduced */
+            text-align: center;
+        }
+
+        #admin h2 {
+            font-size: 30px; /* Reduced */
+            color: var(--accent-color);
+            margin-bottom: 25px; /* Reduced */
+        }
+
+        .admin-menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px; /* Reduced */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+
+        .admin-menu li {
+            margin: 0 12px 12px 0; /* Reduced */
+        }
+
+        .admin-menu button {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            padding: 9px 18px; /* Reduced */
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px; /* Reduced */
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .admin-menu button:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #chat-list-container {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            max-width: 700px; /* Reduced */
+            margin: 0 auto;
+            padding: 18px; /* Reduced */
+        }
+
+        .chat-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #333;
+            padding: 12px; /* Reduced */
+            margin-bottom: 8px; /* Reduced */
+            border-radius: 5px;
+            border-left: 5px solid var(--primary-color);
+        }
+
+        .chat-list-item span {
+            font-size: 16px; /* Reduced */
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .chat-list-item button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 7px 12px; /* Reduced */
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px; /* Reduced */
+            transition: background-color 0.3s ease;
+        }
+
+        .chat-list-item button.open-chat-btn:hover {
+            background-color: #5cb85c;
+        }
+
+        .chat-list-item button.close-chat-btn-admin {
+            background-color: #d9534f;
+            margin-left: 8px; /* Reduced */
+        }
+
+        .chat-list-item button.close-chat-btn-admin:hover {
+            background-color: #c9302c;
+        }
+
+        /* --- Global Messages --- */
+        #notification-message {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            padding: 12px; /* Reduced */
+            text-align: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 10000;
+            transform: translateY(-100%);
+            transition: transform 0.5s ease-in-out;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            font-size: 15px; /* Reduced */
+        }
+
+        #notification-message.show {
+            transform: translateY(0);
+        }
+
+        /* --- Media Queries for Responsiveness --- */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 18px; /* Further reduced */
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            #home h1 {
+                font-size: 32px; /* Further reduced */
+            }
+
+            .price-card h2 {
+                font-size: 26px; /* Further reduced */
+            }
+
+            .price-card .price {
+                font-size: 38px; /* Further reduced */
+            }
+
+            .price-card ul li {
+                font-size: 15px; /* Further reduced */
+            }
+
+            .order-button {
+                font-size: 15px; /* Further reduced */
+                padding: 10px 20px;
+            }
+
+            #auth h2, #profile h2, #order-info h2, #chat h2, #admin h2 {
+                font-size: 28px; /* Further reduced */
+            }
+
+            .auth-form-container, .chat-container {
+                padding: 20px; /* Further reduced */
+            }
+
+            .auth-form-container input, .auth-form-container button {
+                font-size: 14px; /* Further reduced */
+                padding: 10px;
+            }
+
+            #profile-info p {
+                font-size: 16px; /* Further reduced */
+            }
+
+            #order-details p {
+                font-size: 18px; /* Further reduced */
+            }
+
+            .confirm-order-btn {
+                font-size: 16px; /* Further reduced */
+                padding: 10px 25px;
+            }
+
+            .chat-header {
+                font-size: 16px; /* Further reduced */
+                padding: 10px 15px;
+            }
+
+            .close-chat-btn {
+                font-size: 14px; /* Further reduced */
+                padding: 6px 10px;
+            }
+
+            .chat-messages, .message-bubble, .chat-input-container input, .chat-input-container button {
+                font-size: 14px; /* Further reduced */
+            }
+
+            .admin-menu {
+                flex-direction: column;
+                align-items: center; /* Center items in column */
+            }
+
+            .admin-menu li {
+                margin: 8px 0; /* Further reduced */
+            }
+
+            .admin-menu button {
+                font-size: 15px; /* Further reduced */
+            }
+
+            .chat-list-item span {
+                font-size: 15px; /* Further reduced */
+            }
+            .chat-list-item button {
+                font-size: 13px; /* Further reduced */
+            }
+
+            .chat-list-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .chat-list-item div {
+                margin-top: 8px; /* Further reduced */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <a href="#" class="logo" onclick="navigateTo('home'); closeMenu(); return false;">Grapi Host BD</a>
+            <div class="menu-icon" id="menuIcon">&#9776;</div>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#" onclick="navigateTo('home'); closeMenu(); return false;">Home</a></li>
+                <li id="profileNavLink" style="display: none;"><a href="#" onclick="navigateTo('profile'); closeMenu(); return false;">Profile</a></li>
+                <li id="chatNavLink" style="display: none;"><a href="#" onclick="navigateTo('chat'); closeMenu(); return false;">Chat</a></li>
+                <li id="authNavLink"><a href="#" onclick="navigateTo('auth'); closeMenu(); return false;">Login/Register</a></li>
+                <li id="adminNavLink" style="display: none;"><a href="#" onclick="navigateTo('admin'); closeMenu(); return false;">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section id="home" class="page-section active">
+            <h1>Minecraft Premium Server Plans</h1>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <h2>ANDESITE (2GB)</h2>
+                    <p class="price">৳70.00 BDT<small>/Monthly</small></p>
+                    <ul>
+                        <li>2 GB RAM</li>
+                        <li>5 GB DISK</li>
+                        <li>1 Shared Logical Cores*</li>
+                        <li>3 Backup (Remote)</li>
+                        <li>3 Additional Ports</li>
+                        <li>3 Mysql Databases</li>
+                    </ul>
+                    <button class="order-button" data-plan-name="ANDESITE (2GB)" data-plan-price="70.00">Order Now</button>
+                </div>
+                <div class="price-card">
+                    <h2>BEDROCK (3GB)</h2>
+                    <p class="price">৳160.00 BDT<small>/Monthly</small></p>
+                    <ul>
+                        <li>3 GB RAM</li>
+                        <li>10 GB DISK</li>
+                        <li>2 Shared Logical Cores*</li>
+                        <li>3 Backup (Remote)</li>
+                        <li>3 Additional Ports</li>
+                        <li>3 Mysql Databases</li>
+                    </ul>
+                    <button class="order-button" data-plan-name="BEDROCK (3GB)" data-plan-price="160.00">Order Now</button>
+                </div>
+                <div class="price-card">
+                    <h2>BRICKS (4GB)</h2>
+                    <p class="price">৳230.00 BDT<small>/Monthly</small></p>
+                    <ul>
+                        <li>4 GB RAM</li>
+                        <li>10 GB DISK</li>
+                        <li>2 Shared Logical Cores*</li>
+                        <li>3 Backup (Remote)</li>
+                        <li>3 Additional Ports</li>
+                        <li>3 Mysql Databases</li>
+                    </ul>
+                    <button class="order-button" data-plan-name="BRICKS (4GB)" data-plan-price="230.00">Order Now</button>
+                </div>
+                <div class="price-card">
+                    <h2>COAL (5GB)</h2>
+                    <p class="price">৳340.00 BDT<small>/Monthly</small></p>
+                    <ul>
+                        <li>5 GB RAM</li>
+                        <li>20 GB DISK</li>
+                        <li>3 Shared Logical Cores*</li>
+                        <li>3 Backup (Remote)</li>
+                        <li>3 Additional Ports</li>
+                        <li>3 Mysql Databases</li>
+                    </ul>
+                    <button class="order-button" data-plan-name="COAL (5GB)" data-plan-price="340.00">Order Now</button>
+                </div>
+                <div class="price-card">
+                    <h2>DIAMOND (6GB)</h2>
+                    <p class="price">৳430.00 BDT<small>/Monthly</p>
+                    <ul>
+                        <li>6 GB RAM</li>
+                        <li>20 GB DISK</li>
+                        <li>4 Shared Logical Cores*</li>
+                        <li>3 Backup (Remote)</li>
+                        <li>3 Additional Ports</li>
+                        <li>3 Mysql Databases</li>
+                    </ul>
+                    <button class="order-button" data-plan-name="DIAMOND (6GB)" data-plan-price="430.00">Order Now</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="auth" class="page-section">
+            <div class="auth-form-container">
+                <h2 id="auth-heading">Register</h2>
+                <form id="registerForm">
+                    <input type="text" id="regName" placeholder="Your Name" required>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                    <input type="password" id="regPassword" placeholder="Password" required>
+                    <button type="submit">Register</button>
+                    <p class="toggle-auth-mode" onclick="toggleAuthMode('login')">Already have an account? Login</p>
+                </form>
+                <form id="loginForm" style="display: none;">
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                    <p class="toggle-auth-mode" onclick="toggleAuthMode('register')">Don't have an account? Register</p>
+                </form>
+            </div>
+        </section>
+
+        <section id="profile" class="page-section">
+            <h2>Your Profile</h2>
+            <div id="profile-info" class="auth-form-container">
+                <p>Name: <span id="profileName"></span></p>
+                <p>Email: <span id="profileEmail"></span></p>
+                <button id="profile-logout" onclick="logout()">Logout</button>
+            </div>
+        </section>
+
+        <section id="order-info" class="page-section">
+            <h2>Order Information</h2>
+            <div id="order-details">
+                <p>Plan: <span id="orderPlanName"></span></p>
+                <p>Price: <span id="orderPlanPrice"></span></p>
+            </div>
+            <button class="confirm-order-btn" onclick="confirmOrder()">Confirm Order</button>
+        </section>
+
+        <section id="chat" class="page-section">
+            <h2>Your Chat</h2>
+            <div class="chat-container">
+                <div class="chat-header">
+                    <span>Buy Chat</span> <button class="close-chat-btn" onclick="showCloseChatConfirmation()">Close Chat</button>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    </div>
+                <div class="chat-input-container">
+                    <input type="text" id="chatInput" placeholder="Type your message...">
+                    <button onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="admin" class="page-section">
+            <h2>Admin Panel</h2>
+            <ul class="admin-menu">
+                <li><button onclick="showAdminSection('chatlist')">Secret Chatlist</button></li>
+                </ul>
+
+            <div id="admin-chatlist" class="admin-content-section" style="display: block;">
+                <h3>User Chat Requests</h3>
+                <div id="chat-list-container">
+                    <div id="no-chat-message" style="text-align: center; color: #aaa; padding: 20px;">No active chats.</div>
+                </div>
+            </div>
+
+            <div id="admin-chat-view" class="chat-container" style="display: none; margin-top: 30px;">
+                <div class="chat-header">
+                    <span id="adminChattingWith">Chatting with: User</span>
+                    <button class="close-chat-btn" onclick="closeAdminChat()">Close Chat</button>
+                </div>
+                <div class="chat-messages" id="adminChatMessages">
+                    </div>
+                <div class="chat-input-container">
+                    <input type="text" id="adminChatInput" placeholder="Type your message...">
+                    <button onclick="sendAdminMessage()">Send</button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <div id="notification-message"></div>
+
+    <script>
+        const pages = document.querySelectorAll('.page-section');
+        const menuIcon = document.getElementById('menuIcon');
+        const navLinks = document.getElementById('navLinks'); // Changed to navLinks
+        const profileNavLink = document.getElementById('profileNavLink');
+        const chatNavLink = document.getElementById('chatNavLink');
+        const authNavLink = document.getElementById('authNavLink');
+        const adminNavLink = document.getElementById('adminNavLink');
+        const authHeading = document.getElementById('auth-heading');
+        const registerForm = document.getElementById('registerForm');
+        const loginForm = document.getElementById('loginForm');
+        const notificationMessage = document.getElementById('notification-message');
+
+        let currentUser = null; // Stores logged-in user info
+        let activeChat = null; // Stores the active chat for the current user
+        let adminActiveChatUser = null; // Stores the user ID for admin's active chat
+
+        // Mock data for demonstration purposes
+        const users = JSON.parse(localStorage.getItem('users')) || {};
+        const chats = JSON.parse(localStorage.getItem('chats')) || {};
+        const ADMIN_EMAIL = "adminggxp@admininfo.com";
+        const ADMIN_PASS = "adminggxphost"; // Your admin password
+
+        // Initialize admin user if not exists
+        if (!users[ADMIN_EMAIL]) {
+            users[ADMIN_EMAIL] = { name: "Admin", email: ADMIN_EMAIL, password: ADMIN_PASS, isAdmin: true };
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check for logged-in user on load
+            const loggedInUserEmail = localStorage.getItem('loggedInUser');
+            if (loggedInUserEmail && users[loggedInUserEmail]) {
+                currentUser = users[loggedInUserEmail];
+                updateNavForLogin();
+                if (currentUser.isAdmin) {
+                    navigateTo('admin'); // Admins go directly to admin page
+                } else {
+                    navigateTo('home'); // Regular users go to home
+                }
+            } else {
+                navigateTo('home');
+            }
+            loadChats(); // Load existing chats for chat list
+        });
+
+        // --- Navigation and Menu ---
+        function navigateTo(pageId) {
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            document.getElementById(pageId).classList.add('active');
+
+            // Hide/show auth/profile/chat links based on login status
+            if (pageId === 'auth' && currentUser) {
+                navigateTo('profile'); // If logged in, go to profile instead of auth
+                return;
+            }
+            if (pageId === 'profile' && !currentUser) {
+                navigateTo('auth'); // If not logged in, go to auth instead of profile
+                return;
+            }
+            if (pageId === 'chat' && !currentUser) {
+                navigateTo('auth'); // If not logged in, go to auth instead of chat
+                return;
+            }
+        }
+
+        // Toggle menu dropdown
+        menuIcon.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Close menu when clicking outside (on desktop or mobile) or on a link
+        document.addEventListener('click', (event) => {
+            if (!navLinks.contains(event.target) && !menuIcon.contains(event.target)) {
+                closeMenu();
+            }
+        });
+
+        function closeMenu() {
+            navLinks.classList.remove('active');
+        }
+
+        function updateNavForLogin() {
+            if (currentUser) {
+                authNavLink.style.display = 'none';
+                profileNavLink.style.display = 'block';
+                chatNavLink.style.display = 'block';
+                if (currentUser.isAdmin) {
+                    adminNavLink.style.display = 'block';
+                } else {
+                    adminNavLink.style.display = 'none';
+                }
+            } else {
+                authNavLink.style.display = 'block';
+                profileNavLink.style.display = 'none';
+                chatNavLink.style.display = 'none';
+                adminNavLink.style.display = 'none';
+            }
+        }
+
+        // --- Authentication (Register/Login) ---
+        function showNotification(message, type = 'success') {
+            notificationMessage.textContent = message;
+            notificationMessage.className = 'notification-message show'; // Reset classes
+            if (type === 'error') {
+                notificationMessage.style.backgroundColor = '#d9534f'; // Red
+            } else {
+                notificationMessage.style.backgroundColor = '#4CAF50'; // Green
+            }
+
+            setTimeout(() => {
+                notificationMessage.classList.remove('show');
+            }, 3000);
+        }
+
+        function toggleAuthMode(mode) {
+            if (mode === 'login') {
+                authHeading.textContent = 'Login';
+                registerForm.style.display = 'none';
+                loginForm.style.display = 'block';
+            } else {
+                authHeading.textContent = 'Register';
+                registerForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            }
+        }
+
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+
+            if (users[email]) {
+                showNotification('User with this email already exists.', 'error');
+                return;
+            }
+
+            users[email] = { name, email, password, isAdmin: false, chat: [] };
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('loggedInUser', email);
+            currentUser = users[email];
+            showNotification('Registration successful! You are now logged in.');
+            updateNavForLogin();
+            navigateTo('home');
+        });
+
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (users[email] && users[email].password === password) {
+                localStorage.setItem('loggedInUser', email);
+                currentUser = users[email];
+                showNotification('Login successful!');
+                updateNavForLogin();
+                if (currentUser.isAdmin) {
+                    navigateTo('admin');
+                } else {
+                    navigateTo('home');
+                }
+            } else {
+                showNotification('Invalid email or password.', 'error');
+            }
+        });
+
+        function logout() {
+            localStorage.removeItem('loggedInUser');
+            currentUser = null;
+            activeChat = null; // Clear active chat on logout
+            showNotification('Logged out successfully.');
+            updateNavForLogin();
+            navigateTo('home');
+        }
+
+        // --- Profile Section ---
+        document.getElementById('profile').addEventListener('click', () => {
+            if (currentUser) {
+                document.getElementById('profileName').textContent = currentUser.name;
+                document.getElementById('profileEmail').textContent = currentUser.email;
+            }
+        });
+
+        // --- Order Process ---
+        document.querySelectorAll('.order-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                if (!currentUser) {
+                    showNotification('Please Login or Register to place an order.', 'error');
+                    navigateTo('auth');
+                    return;
+                }
+                const planName = e.target.dataset.planName;
+                const planPrice = e.target.dataset.planPrice;
+
+                document.getElementById('orderPlanName').textContent = planName;
+                document.getElementById('orderPlanPrice').textContent = `৳${parseFloat(planPrice).toFixed(2)} BDT`;
+                navigateTo('order-info');
+            });
+        });
+
+        function confirmOrder() {
+            if (!currentUser) {
+                showNotification('You must be logged in to confirm an order.', 'error');
+                navigateTo('auth');
+                return;
+            }
+
+            const planName = document.getElementById('orderPlanName').textContent;
+            const planPrice = document.getElementById('orderPlanPrice').textContent;
+
+            // Check if user already has an active chat
+            if (chats[currentUser.email] && chats[currentUser.email].status === 'active') {
+                showNotification('You already have an active chat for an order. Please close it first to open a new one.', 'error');
+                navigateTo('chat');
+                return;
+            }
+
+            // Create a new chat for this order
+            chats[currentUser.email] = {
+                userId: currentUser.email,
+                userName: currentUser.name,
+                messages: [
+                    { sender: 'user', text: `Hello, I want to buy ${planName} ${planPrice}.` },
+                    { sender: 'admin', text: 'আসসালামু আলাইকুম। আপনি কি এই প্ল্যানটি কিনতে চান? আপনার সাথে আমাদের স্টাফরা কথা বলবে।' }
+                ],
+                status: 'active' // Mark chat as active
+            };
+            localStorage.setItem('chats', JSON.stringify(chats));
+            activeChat = chats[currentUser.email]; // Set current user's active chat
+
+            showNotification('Order confirmed! A chat has been opened with our staff.', 'success');
+            navigateTo('chat');
+            renderChatMessages();
+        }
+
+        // --- User Chat System ---
+        function renderChatMessages() {
+            const chatMessagesContainer = document.getElementById('chatMessages');
+            chatMessagesContainer.innerHTML = '';
+            if (activeChat && activeChat.messages) {
+                activeChat.messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.classList.add('chat-message');
+                    msgDiv.classList.add(msg.sender === 'user' ? 'user' : 'admin');
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('message-bubble');
+                    bubble.textContent = msg.text;
+                    msgDiv.appendChild(bubble);
+                    chatMessagesContainer.appendChild(msgDiv);
+                });
+                chatMessagesContainer.scrollTop = chatMessagesContainer.scrollHeight; // Scroll to bottom
+            } else {
+                chatMessagesContainer.innerHTML = '<div style="text-align: center; color: #aaa; padding: 20px;">No active chat. Please confirm an order to start one.</div>';
+            }
+        }
+
+        function sendMessage() {
+            if (!currentUser) {
+                showNotification('Please login to send messages.', 'error');
+                return;
+            }
+            if (!activeChat) {
+                showNotification('No active chat. Please confirm an order first.', 'error');
+                return;
+            }
+
+            const chatInput = document.getElementById('chatInput');
+            const messageText = chatInput.value.trim();
+
+            if (messageText) {
+                activeChat.messages.push({ sender: 'user', text: messageText });
+                localStorage.setItem('chats', JSON.stringify(chats));
+                renderChatMessages();
+                chatInput.value = '';
+            }
+        }
+
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        document.getElementById('chat').addEventListener('click', () => {
+            if (currentUser && chats[currentUser.email] && chats[currentUser.email].status === 'active') {
+                activeChat = chats[currentUser.email];
+                renderChatMessages();
+            } else {
+                activeChat = null;
+                renderChatMessages(); // Display "No active chat" message
+            }
+        });
+
+        function showCloseChatConfirmation() {
+            if (activeChat) {
+                if (confirm('Are you sure you want to close this chat? This will delete the chat history.')) {
+                    // Chat closure logic moved to closeChat function
+                    closeChat();
+                }
+            } else {
+                showNotification('No active chat to close.', 'error');
+            }
+        }
+
+        function closeChat() {
+            if (!currentUser || !activeChat) {
+                showNotification('No active chat to close.', 'error');
+                return;
+            }
+            
+            delete chats[currentUser.email]; // Delete chat from storage
+            localStorage.setItem('chats', JSON.stringify(chats));
+            activeChat = null;
+            showNotification('Chat closed successfully.', 'success');
+            navigateTo('home'); // Go back to home after closing chat
+        }
+
+        // --- Admin Chat System ---
+        function loadChats() {
+            const chatListContainer = document.getElementById('chat-list-container');
+            const noChatMessage = document.getElementById('no-chat-message');
+            chatListContainer.innerHTML = ''; // Clear previous list
+            let hasActiveChats = false;
+
+            for (const email in chats) {
+                if (chats[email].status === 'active') {
+                    hasActiveChats = true;
+                    const chatItem = document.createElement('div');
+                    chatItem.classList.add('chat-list-item');
+                    chatItem.innerHTML = `
+                        <span>${chats[email].userName} (${email})</span>
+                        <div>
+                            <button class="open-chat-btn" data-user-email="${email}">Open Chat</button>
+                            <button class="close-chat-btn-admin" data-user-email="${email}">Close Chat</button>
+                        </div>
+                    `;
+                    chatListContainer.appendChild(chatItem);
+                }
+            }
+
+            if (!hasActiveChats) {
+                chatListContainer.appendChild(noChatMessage);
+                noChatMessage.style.display = 'block';
+            } else {
+                noChatMessage.style.display = 'none';
+            }
+
+            // Add event listeners to the new buttons
+            chatListContainer.querySelectorAll('.open-chat-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userEmail = e.target.dataset.userEmail;
+                    openAdminChat(userEmail);
+                });
+            });
+
+            chatListContainer.querySelectorAll('.close-chat-btn-admin').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const userEmail = e.target.dataset.userEmail;
+                    if (confirm(`Are you sure you want to close the chat with ${chats[userEmail].userName}? This will delete the chat history for both sides.`)) {
+                        delete chats[userEmail];
+                        localStorage.setItem('chats', JSON.stringify(chats));
+                        showNotification(`Chat with ${chats[userEmail].userName} closed by admin.`, 'success');
+                        loadChats(); // Refresh the list
+                        if (adminActiveChatUser === userEmail) { // If admin was chatting with this user
+                             closeAdminChat(); // Close admin chat view
+                        }
+                    }
+                });
+            });
+        }
+
+        function openAdminChat(userEmail) {
+            adminActiveChatUser = userEmail;
+            document.getElementById('adminChattingWith').textContent = `Chatting with: ${chats[userEmail].userName}`;
+            document.getElementById('admin-chatlist').style.display = 'none';
+            document.getElementById('admin-chat-view').style.display = 'flex';
+            renderAdminChatMessages();
+        }
+
+        function renderAdminChatMessages() {
+            const adminChatMessagesContainer = document.getElementById('adminChatMessages');
+            adminChatMessagesContainer.innerHTML = '';
+            if (adminActiveChatUser && chats[adminActiveChatUser]) {
+                chats[adminActiveChatUser].messages.forEach(msg => {
+                    const msgDiv = document.createElement('div');
+                    msgDiv.classList.add('chat-message');
+                    // In admin view, user's messages are on the right, admin's on the left
+                    msgDiv.classList.add(msg.sender === 'user' ? 'user' : 'admin'); 
+                    const bubble = document.createElement('div');
+                    bubble.classList.add('message-bubble');
+                    bubble.textContent = msg.text;
+                    msgDiv.appendChild(bubble);
+                    adminChatMessagesContainer.appendChild(msgDiv);
+                });
+                adminChatMessagesContainer.scrollTop = adminChatMessagesContainer.scrollHeight; // Scroll to bottom
+            }
+        }
+
+        function sendAdminMessage() {
+            if (!adminActiveChatUser) {
+                showNotification('No user selected for chat.', 'error');
+                return;
+            }
+
+            const adminChatInput = document.getElementById('adminChatInput');
+            const messageText = adminChatInput.value.trim();
+
+            if (messageText) {
+                chats[adminActiveChatUser].messages.push({ sender: 'admin', text: messageText });
+                localStorage.setItem('chats', JSON.stringify(chats));
+                renderAdminChatMessages();
+                adminChatInput.value = '';
+            }
+        }
+
+        document.getElementById('adminChatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendAdminMessage();
+            }
+        });
+
+        function closeAdminChat() {
+            adminActiveChatUser = null;
+            document.getElementById('admin-chat-view').style.display = 'none';
+            document.getElementById('admin-chatlist').style.display = 'block';
+            loadChats(); // Reload chat list
+        }
+
+        function showAdminSection(section) {
+            // Only 'chatlist' for now, but scalable
+            document.getElementById('admin-chatlist').style.display = 'block';
+            document.getElementById('admin-chat-view').style.display = 'none';
+            loadChats();
+        }
+
+    </script>
+</body>
+</html>
